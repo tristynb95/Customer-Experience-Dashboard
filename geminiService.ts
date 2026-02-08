@@ -1,9 +1,13 @@
 import { GoogleGenAI } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+const ai = apiKey ? new GoogleGenAI({ apiKey }) : null;
 
 export const analyzeFeedback = async (employeeName: string, comments: string[]): Promise<string> => {
   if (comments.length === 0) return "No comments available for analysis.";
+  if (!ai) {
+    return "Missing Gemini API key. Set VITE_GEMINI_API_KEY in your .env.local file and restart the dev server.";
+  }
 
   const prompt = `
     You are an expert HR and Customer Experience analyst for GAIL's Bakery. 
